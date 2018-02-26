@@ -25,11 +25,15 @@ class PluginFactory {
                 mix[name] = (...args) => {
                     component.register(...args);
 
+                    component.activated = true;
+
                     return mix;
                 };
 
                 if (component.webpackPlugins) {
                     Mix.listen("loading-plugins", plugins => {
+                        if (!component.activated) return;
+
                         let newPlugins = component.webpackPlugins();
 
                         if (Array.isArray(newPlugins)) {
