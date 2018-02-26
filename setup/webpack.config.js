@@ -6,23 +6,9 @@
 
 let mix = require("../src/index");
 
-let Verify = require("../src/Verify");
+let PluginFactory = require("../src/PluginFactory");
 
-// And then register the API components.
-["../src/components/stylus", "../src/components/less"]
-    .map(path => require(path))
-    .forEach(Component => {
-        let component = new Component();
-
-        if (component.dependencies) {
-            Verify.dependency(
-                component.dependencies()[0],
-                component.dependencies()
-            );
-        }
-
-        component.register(mix);
-    });
+PluginFactory.load();
 
 require(Mix.paths.mix());
 

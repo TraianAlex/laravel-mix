@@ -5,10 +5,8 @@ class Less extends Preprocessor {
         return ["less-loader", "less"];
     }
 
-    register(mix) {
-        mix.less = (src, output, pluginOptions = {}) => {
-            return this.preprocess("less", src, output, pluginOptions);
-        };
+    register(src, output, pluginOptions = {}) {
+        this.preprocess("less", src, output, pluginOptions);
     }
 }
 

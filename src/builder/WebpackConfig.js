@@ -1,9 +1,9 @@
-let webpack = require('webpack');
+let webpack = require("webpack");
 
-let webpackDefaultConfig = require('./webpack-default');
-let webpackEntry = require('./webpack-entry');
-let webpackRules = require('./webpack-rules');
-let webpackPlugins = require('./webpack-plugins');
+let webpackDefaultConfig = require("./webpack-default");
+let webpackEntry = require("./webpack-entry");
+let webpackRules = require("./webpack-rules");
+let webpackPlugins = require("./webpack-plugins");
 
 process.noDeprecation = true;
 
@@ -26,7 +26,7 @@ class WebpackConfig {
             .buildResolving()
             .mergeCustomConfig();
 
-        Mix.dispatch('configReady', this.webpackConfig);
+        Mix.dispatch("configReady", this.webpackConfig);
 
         return this.webpackConfig;
     }
@@ -58,25 +58,25 @@ class WebpackConfig {
      * Build the output object.
      */
     buildOutput() {
-        let http = process.argv.includes('--https') ? 'https' : 'http';
+        let http = process.argv.includes("--https") ? "https" : "http";
 
-        if (Mix.isUsing('hmr')) {
+        if (Mix.isUsing("hmr")) {
             this.webpackConfig.devServer.host = Config.hmrOptions.host;
             this.webpackConfig.devServer.port = Config.hmrOptions.port;
         }
 
         this.webpackConfig.output = {
-            path: path.resolve(Mix.isUsing('hmr') ? '/' : Config.publicPath),
-            filename: '[name].js',
-            chunkFilename: '[name].js',
-            publicPath: Mix.isUsing('hmr')
+            path: path.resolve(Mix.isUsing("hmr") ? "/" : Config.publicPath),
+            filename: "[name].js",
+            chunkFilename: "[name].js",
+            publicPath: Mix.isUsing("hmr")
                 ? http +
-                  '://' +
+                  "://" +
                   Config.hmrOptions.host +
-                  ':' +
+                  ":" +
                   Config.hmrOptions.port +
-                  '/'
-                : ''
+                  "/"
+                : ""
         };
 
         return this;
@@ -106,6 +106,8 @@ class WebpackConfig {
             webpackPlugins()
         );
 
+        Mix.dispatch("loading-plugins", this.webpackConfig.plugins);
+
         return this;
     }
 
@@ -113,14 +115,14 @@ class WebpackConfig {
      * Build the resolve object.
      */
     buildResolving() {
-        let extensions = ['*', '.js', '.jsx', '.vue'];
+        let extensions = ["*", ".js", ".jsx", ".vue"];
 
-        let buildFile = 'vue/dist/vue.common.js';
+        let buildFile = "vue/dist/vue.common.js";
 
         if (Config.typeScript) {
-            extensions.push('.ts', '.tsx');
+            extensions.push(".ts", ".tsx");
 
-            buildFile = 'vue/dist/vue.esm.js';
+            buildFile = "vue/dist/vue.esm.js";
         }
 
         this.webpackConfig.resolve = {
@@ -139,7 +141,7 @@ class WebpackConfig {
      */
     mergeCustomConfig() {
         if (Config.webpackConfig) {
-            this.webpackConfig = require('webpack-merge').smart(
+            this.webpackConfig = require("webpack-merge").smart(
                 this.webpackConfig,
                 Config.webpackConfig
             );

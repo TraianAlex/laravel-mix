@@ -5,10 +5,8 @@ class Stylus extends Preprocessor {
         return ["stylus-loader", "stylus"];
     }
 
-    register(mix) {
-        mix.stylus = (src, output, pluginOptions = {}) => {
-            return this.preprocess("stylus", src, output, pluginOptions);
-        };
+    register(src, output, pluginOptions = {}) {
+        return this.preprocess("stylus", src, output, pluginOptions);
     }
 }
 

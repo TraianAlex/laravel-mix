@@ -251,27 +251,6 @@ class Api {
     }
 
     /**
-     * Enable Browsersync support for the project.
-     *
-     * @param {object} config
-     */
-    browserSync(config = {}) {
-        Verify.dependency(
-            "browser-sync-webpack-plugin",
-            ["browser-sync-webpack-plugin", "browser-sync"],
-            true
-        );
-
-        if (typeof config === "string") {
-            config = { proxy: config };
-        }
-
-        Config.browserSync = config;
-
-        return this;
-    }
-
-    /**
      * Enable automatic file versioning.
      *
      * @param {Array} files
