@@ -1,11 +1,11 @@
-let Verify = require('./Verify');
-let CopyFilesTask = require('./tasks/CopyFilesTask');
-let ConcatFilesTask = require('./tasks/ConcatenateFilesTask');
-let VersionFilesTask = require('./tasks/VersionFilesTask');
-let webpack = require('webpack');
-let glob = require('glob');
-let _ = require('lodash');
-let path = require('path');
+let Verify = require("./Verify");
+let CopyFilesTask = require("./tasks/CopyFilesTask");
+let ConcatFilesTask = require("./tasks/ConcatenateFilesTask");
+let VersionFilesTask = require("./tasks/VersionFilesTask");
+let webpack = require("webpack");
+let glob = require("glob");
+let _ = require("lodash");
+let path = require("path");
 
 class Api {
     /**
@@ -15,7 +15,7 @@ class Api {
      * @param {string} output
      */
     js(entry, output) {
-        if (typeof entry === 'string' && entry.includes('*')) {
+        if (typeof entry === "string" && entry.includes("*")) {
             entry = glob.sync(entry);
         }
 
@@ -38,7 +38,7 @@ class Api {
     react(entry, output) {
         Config.react = true;
 
-        Verify.dependency('babel-preset-react', ['babel-preset-react']);
+        Verify.dependency("babel-preset-react", ["babel-preset-react"]);
 
         return this.js(entry, output);
     }
@@ -52,7 +52,7 @@ class Api {
     preact(entry, output) {
         Config.preact = true;
 
-        Verify.dependency('babel-preset-preact', ['babel-preset-preact']);
+        Verify.dependency("babel-preset-preact", ["babel-preset-preact"]);
 
         return this.js(entry, output);
     }
@@ -63,7 +63,7 @@ class Api {
     ts(entry, output) {
         Config.typeScript = true;
 
-        Verify.dependency('ts-loader', ['ts-loader', 'typescript']);
+        Verify.dependency("ts-loader", ["ts-loader", "typescript"]);
 
         return this.js(entry, output);
     }
@@ -86,13 +86,13 @@ class Api {
         pluginOptions = Object.assign(
             {
                 precision: 8,
-                outputStyle: 'expanded'
+                outputStyle: "expanded"
             },
             pluginOptions,
             { sourceMap: true }
         );
 
-        return this.preprocess('sass', src, output, pluginOptions);
+        return this.preprocess("sass", src, output, pluginOptions);
     }
 
     /**
@@ -105,7 +105,7 @@ class Api {
     standaloneSass(src, output, pluginOptions = {}) {
         Verify.exists(src);
 
-        return this.preprocess('fastSass', src, output, pluginOptions);
+        return this.preprocess("fastSass", src, output, pluginOptions);
     }
 
     /**
@@ -120,32 +120,6 @@ class Api {
     }
 
     /**
-     * Register Less compilation.
-     *
-     * @param {string} src
-     * @param {string} output
-     * @param {object} pluginOptions
-     */
-    less(src, output, pluginOptions) {
-        Verify.dependency('less-loader', ['less-loader', 'less']);
-
-        return this.preprocess('less', src, output, pluginOptions);
-    }
-
-    /**
-     * Register Stylus compilation.
-     *
-     * @param {string} src
-     * @param {string} output
-     * @param {object} pluginOptions
-     */
-    stylus(src, output, pluginOptions = {}) {
-        Verify.dependency('stylus-loader', ['stylus-loader', 'stylus']);
-
-        return this.preprocess('stylus', src, output, pluginOptions);
-    }
-
-    /**
      * Register postcss compilation.
      *
      * @param {string} src
@@ -153,53 +127,22 @@ class Api {
      * @param {array}  postCssPlugins
      */
     postCss(src, output, postCssPlugins = []) {
-        Verify.preprocessor('postCss', src, output);
+        Verify.preprocessor("postCss", src, output);
 
         src = new File(src);
 
         output = this._normalizeOutput(
             new File(output),
-            src.nameWithoutExtension() + '.css'
+            src.nameWithoutExtension() + ".css"
         );
 
-        Config.preprocessors['postCss'] = (
-            Config.preprocessors['postCss'] || []
+        Config.preprocessors["postCss"] = (
+            Config.preprocessors["postCss"] || []
         ).concat({
             src,
             output,
             postCssPlugins
         });
-
-        return this;
-    }
-
-    /**
-     * Register a generic CSS preprocessor.
-     *
-     * @param {string} type
-     * @param {string} src
-     * @param {string} output
-     * @param {object} pluginOptions
-     */
-    preprocess(type, src, output, pluginOptions = {}) {
-        Verify.preprocessor(type, src, output);
-
-        src = new File(src);
-
-        output = this._normalizeOutput(
-            new File(output),
-            src.nameWithoutExtension() + '.css'
-        );
-
-        Config.preprocessors[type] = (Config.preprocessors[type] || []).concat({
-            src,
-            output,
-            pluginOptions
-        });
-
-        if (type === 'fastSass') {
-            Mix.addAsset(output);
-        }
 
         return this;
     }
@@ -211,14 +154,14 @@ class Api {
      * @param {string}       output
      * @param {Boolean}      babel
      */
-    combine(src, output = '', babel = false) {
+    combine(src, output = "", babel = false) {
         output = new File(output);
 
         Verify.combine(src, output);
 
-        if (typeof src === 'string' && File.find(src).isDirectory()) {
+        if (typeof src === "string" && File.find(src).isDirectory()) {
             src = _.pull(
-                glob.sync(path.join(src, '**/*'), { nodir: true }),
+                glob.sync(path.join(src, "**/*"), { nodir: true }),
                 output.relativePath()
             );
         }
@@ -274,7 +217,7 @@ class Api {
             return this;
         }
 
-        let output = src.replace(/\.([a-z]{2,})$/i, '.min.$1');
+        let output = src.replace(/\.([a-z]{2,})$/i, ".min.$1");
 
         return this.combine(src, output);
     }
@@ -314,12 +257,12 @@ class Api {
      */
     browserSync(config = {}) {
         Verify.dependency(
-            'browser-sync-webpack-plugin',
-            ['browser-sync-webpack-plugin', 'browser-sync'],
+            "browser-sync-webpack-plugin",
+            ["browser-sync-webpack-plugin", "browser-sync"],
             true
         );
 
-        if (typeof config === 'string') {
+        if (typeof config === "string") {
             config = { proxy: config };
         }
 
@@ -339,10 +282,10 @@ class Api {
         files = flatten(
             [].concat(files).map(filePath => {
                 if (File.find(filePath).isDirectory()) {
-                    filePath += path.sep + '**/*';
+                    filePath += path.sep + "**/*";
                 }
 
-                if (!filePath.includes('*')) return filePath;
+                if (!filePath.includes("*")) return filePath;
 
                 return glob.sync(
                     new File(filePath).forceFromPublic().relativePath(),
@@ -375,9 +318,9 @@ class Api {
      * @param {Boolean} productionToo
      * @param {string}  type
      */
-    sourceMaps(productionToo = true, type = 'eval-source-map') {
+    sourceMaps(productionToo = true, type = "eval-source-map") {
         if (Mix.inProduction()) {
-            type = productionToo ? 'source-map' : false;
+            type = productionToo ? "source-map" : false;
         }
 
         Config.sourcemaps = type;
@@ -391,7 +334,7 @@ class Api {
      * @param {string} defaultPath
      */
     setPublicPath(defaultPath) {
-        Config.publicPath = path.normalize(defaultPath.replace(/\/$/, ''));
+        Config.publicPath = path.normalize(defaultPath.replace(/\/$/, ""));
 
         return this;
     }
@@ -454,9 +397,9 @@ class Api {
      * @param {object} config
      */
     webpackConfig(config) {
-        config = typeof config == 'function' ? config(webpack) : config;
+        config = typeof config == "function" ? config(webpack) : config;
 
-        Config.webpackConfig = require('webpack-merge').smart(
+        Config.webpackConfig = require("webpack-merge").smart(
             Config.webpackConfig,
             config
         );
@@ -481,13 +424,13 @@ class Api {
      */
     options(options) {
         if (options.purifyCss) {
-            options.purifyCss = require('./PurifyPaths').build(
+            options.purifyCss = require("./PurifyPaths").build(
                 options.purifyCss
             );
 
             Verify.dependency(
-                'purifycss-webpack',
-                ['purifycss-webpack', 'purify-css'],
+                "purifycss-webpack",
+                ["purifycss-webpack", "purify-css"],
                 true // abortOnComplete
             );
         }
@@ -503,7 +446,7 @@ class Api {
      * @param {Function} callback
      */
     then(callback) {
-        Mix.listen('build', callback);
+        Mix.listen("build", callback);
 
         return this;
     }

@@ -4,7 +4,26 @@
  * a generic config object will be constructed for us.
  */
 
-require('../src/index');
+let mix = require("../src/index");
+
+let Verify = require("../src/Verify");
+
+// And then register the API components.
+["../src/components/stylus", "../src/components/less"]
+    .map(path => require(path))
+    .forEach(Component => {
+        let component = new Component();
+
+        if (component.dependencies) {
+            Verify.dependency(
+                component.dependencies()[0],
+                component.dependencies()
+            );
+        }
+
+        component.register(mix);
+    });
+
 require(Mix.paths.mix());
 
 /**
@@ -12,7 +31,7 @@ require(Mix.paths.mix());
  * in the build process, we'll make an announcement.
  */
 
-Mix.dispatch('init', Mix);
+Mix.dispatch("init", Mix);
 
 /**
  * Now that we know which build tasks are required by the
@@ -20,6 +39,6 @@ Mix.dispatch('init', Mix);
  * for Webpack. And that's all there is to it. Simple!
  */
 
-let WebpackConfig = require('../src/builder/WebpackConfig');
+let WebpackConfig = require("../src/builder/WebpackConfig");
 
 module.exports = new WebpackConfig().build();
